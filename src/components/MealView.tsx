@@ -8,7 +8,7 @@ interface Props extends MealWithId {
   reload: () => void;
 }
 
-const MealView: React.FC<Props> = ({description, time, kcal, id, reload}) => {
+const MealView: React.FC<Props> = ({description, time, kcal, id, reload, date}) => {
   const [deleting, setDeleting] = useState(false);
 
   const remove = async () => {
@@ -23,9 +23,10 @@ const MealView: React.FC<Props> = ({description, time, kcal, id, reload}) => {
 
   return (
     <div className="card mb-2">
-      <div className="card-header d-flex">
+      <div className="card-header d-flex justify-content-between">
         <span>{time}</span>
-        <span> {kcal}</span>
+        <span><strong className="text-danger">{kcal}</strong> kcal</span>
+        <span>{new Date(date).toLocaleDateString('en', {dateStyle: "medium"})}</span>
       </div>
       <div className="card-body">
         {description}
@@ -34,7 +35,7 @@ const MealView: React.FC<Props> = ({description, time, kcal, id, reload}) => {
         <Link
           to={`/meal-records/${id}/edit`}
           type="button"
-          className="btn btn-primary"
+          className={`btn btn-primary ${deleting ? 'link-disabled' : ''}`}
         >
           Edit
         </Link>

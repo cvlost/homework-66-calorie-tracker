@@ -9,6 +9,7 @@ export interface Meal {
   description: string;
   kcal: number;
   time: typeof meals[number];
+  date: string;
 }
 
 export interface MealMutation extends Meal {

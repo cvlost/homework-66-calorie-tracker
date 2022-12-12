@@ -4,8 +4,9 @@ import {Route, Routes} from "react-router-dom";
 import NotFound from "./components/NotFound/NotFound";
 import Main from "./containers/Main";
 import MealForm from "./components/MealForm/MealForm";
-import {ApiMealList, Meal, MealWithId} from "./types";
+import {ApiMealList, MealWithId} from "./types";
 import axiosApi from "./axiosApi";
+import './App.css';
 
 function App() {
   const [meals, setMeals] = useState<MealWithId[] | null>(null);

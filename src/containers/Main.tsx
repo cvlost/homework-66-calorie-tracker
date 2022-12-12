@@ -20,7 +20,8 @@ const Main: React.FC<Props> = ({mealRecords, reload, loading}) => {
     <>
       Total calories
       <strong className="text-danger"> {mealRecords?.reduce((acc, rec) => acc + rec.kcal, 0)} </strong>
-      kcal</>
+      kcal
+    </>
   );
 
   return (

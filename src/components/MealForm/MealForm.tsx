@@ -4,6 +4,7 @@ import ButtonSpinner from "../Spinner/ButtonSpinner";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import axiosApi from "../../axiosApi";
 import Spinner from "../Spinner/Spinner";
+import DatePicker from 'react-date-picker';
 
 interface Props {
   reload: () => void;
@@ -15,6 +16,7 @@ const MealForm: React.FC<Props> = ({editingMeal, reload}) => {
     description: '',
     kcal: '',
     time: '',
+    date: new Date().toISOString(),
   };
 
   const state: MealMutation = editingMeal ? {
@@ -87,10 +89,14 @@ const MealForm: React.FC<Props> = ({editingMeal, reload}) => {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>  | Date
   ) => {
-    const {name, value} = e.target;
-    setMeal(prev => ({...prev, [name]: value}));
+    if (e instanceof Date) {
+      setMeal(prev => ({...prev, date: e.toISOString()}))
+    } else {
+      const {name, value} = e.target;
+      setMeal(prev => ({...prev, [name]: value}));
+    }
   }
 
   return (
@@ -133,6 +139,16 @@ const MealForm: React.FC<Props> = ({editingMeal, reload}) => {
           </div>
 
           <div className="py-2">
+            <DatePicker
+              required
+              onChange={handleChange}
+              format="yyyy-MM-dd"
+              value={new Date(meal.date)}
+              clearIcon={null}
+            />
+          </div>
+
+          <div className="py-2">
             <button
               disabled={saving}
               type="submit"
@@ -141,11 +157,9 @@ const MealForm: React.FC<Props> = ({editingMeal, reload}) => {
               {saving && <ButtonSpinner/>}
               Save
             </button>
-            {id && (
-              <Link to='/' className="btn btn-secondary">
-                Cancel
-              </Link>
-            )}
+            <Link to='/' className={`btn btn-secondary ${saving ? 'link-disabled' : ''}`} >
+              Back
+            </Link>
           </div>
         </>
       )}
