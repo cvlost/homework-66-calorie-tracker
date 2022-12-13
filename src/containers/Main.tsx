@@ -1,9 +1,17 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 import {MealWithId} from "../types";
-import MealView from "../components/MealView";
+import MealView from "../components/MealView/MealView";
 import Spinner from "../components/Spinner/Spinner";
 import ButtonSpinner from "../components/Spinner/ButtonSpinner";
+
+export const isItToday = (ms: number) => {
+  const d = new Date();
+  const r = new Date(ms);
+  return d.getFullYear() === r.getFullYear() &&
+    d.getDate() === r.getDate() &&
+    d.getMonth() === r.getMonth();
+};
 
 interface Props {
   mealRecords: MealWithId[] | null;
@@ -12,21 +20,25 @@ interface Props {
 }
 
 const Main: React.FC<Props> = ({mealRecords, reload, loading}) => {
+  const totalCalories = mealRecords
+    ?.filter((rec) => isItToday(rec.date))
+    .reduce((acc, rec) => acc + rec.kcal, 0);
+
   const kcalOutput = loading ? (
-    <>Total calories <ButtonSpinner/> kcal</>
+    <>Total calories today: <ButtonSpinner/> kcal</>
   ) : !loading && !mealRecords ? (
-    <>no meal records</>
+    <>No meal records</>
   ) : (
     <>
-      Total calories
-      <strong className="text-danger"> {mealRecords?.reduce((acc, rec) => acc + rec.kcal, 0)} </strong>
+      Total calories today:
+      <strong className="text-danger"> {totalCalories} </strong>
       kcal
     </>
   );
 
   return (
-    <div className="col d-flex flex-column pb-2 h-100">
-      <div className="py-2 d-flex justify-content-between align-items-center">
+    <>
+      <div className="py-3 px-2 d-flex justify-content-between align-items-center">
         <div>
           {kcalOutput}
         </div>
@@ -39,8 +51,8 @@ const Main: React.FC<Props> = ({mealRecords, reload, loading}) => {
         </Link>
       </div>
       <div className="border flex-grow-1 shadow p-2 overflow-auto">
-        {loading ? (
-          <Spinner />
+        {loading && !mealRecords ? (
+          <Spinner/>
         ) : (
           <>
             {mealRecords && mealRecords.map((meal) => (
@@ -53,7 +65,7 @@ const Main: React.FC<Props> = ({mealRecords, reload, loading}) => {
           </>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

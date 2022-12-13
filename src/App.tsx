@@ -15,20 +15,20 @@ function App() {
   const getMeals = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await axiosApi.get<ApiMealList | null>('/meal-records.json');
+      const response = await axiosApi.get<ApiMealList | null>('/meal-records.json?orderBy="date"');
       const data = response.data;
 
       if (!data) {
         return setMeals(null);
       }
 
-      const newMeals = Object.keys(data).map((id) => {
+      const newMeals: MealWithId[] = Object.keys(data).map((id) => {
         return {
           id,
           ...data[id]
         }
       });
-
+      newMeals.sort((a, b) => b.date - a.date);
       setMeals(newMeals);
     } finally {
       setLoading(false);
